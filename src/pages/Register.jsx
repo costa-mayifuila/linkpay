@@ -26,7 +26,6 @@ export default function Register() {
     try {
       const res = await axios.post(`${BASE_URL}/api/auth/register`, formData);
 
-      // Salva token e dados do usuário
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
@@ -37,9 +36,15 @@ export default function Register() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 mt-10 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Criar Conta</h2>
-      {error && <p className="text-red-600">{error}</p>}
+    <div className="max-w-md mx-auto p-6 mt-10 border rounded shadow bg-white">
+      <h2 className="text-2xl font-bold text-center text-blue-700 mb-4">Criar Conta</h2>
+
+      {error && (
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm border border-red-300">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
         <input
           type="text"
@@ -51,6 +56,7 @@ export default function Register() {
           required
           autoComplete="name"
         />
+
         <input
           type="email"
           name="email"
@@ -61,6 +67,7 @@ export default function Register() {
           required
           autoComplete="email"
         />
+
         <input
           type="password"
           name="password"
@@ -71,6 +78,7 @@ export default function Register() {
           required
           autoComplete="new-password"
         />
+
         <input
           type="tel"
           name="phone"
@@ -79,8 +87,14 @@ export default function Register() {
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded"
           autoComplete="tel"
+          pattern="^2449[0-9]{8}$"
+          title="Ex: 2449xxxxxxxx"
         />
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition duration-200"
+        >
           Registrar
         </button>
       </form>

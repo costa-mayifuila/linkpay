@@ -1,32 +1,31 @@
 import { Navigate } from "react-router-dom";
 
-// Componente para proteger rotas
+// Componente que protege rotas privadas
 const ProtectedRoute = ({ children, role }) => {
   let user = null;
 
   try {
     const raw = localStorage.getItem("user");
 
-    // Verifica se raw não está vazio, nulo ou a string "undefined"
+    // Garante que o conteúdo seja válido antes de parsear
     if (raw && raw !== "undefined") {
       user = JSON.parse(raw);
     }
   } catch (error) {
-    console.error("Erro ao ler o usuário do localStorage:", error);
-    user = null;
+    console.error("❌ Erro ao acessar o usuário do localStorage:", error);
   }
 
-  // Se o usuário não estiver logado
+  // Redireciona se não estiver autenticado
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Se uma role for exigida e não for compatível
-  if (role && user.role !== role) {
+  // Redireciona se a role for exigida e não coincidir
+  if (role && user?.role !== role) {
     return <Navigate to="/" replace />;
   }
 
-  // Caso esteja logado e com a role correta (se exigida)
+  // Autorizado
   return children;
 };
 

@@ -16,9 +16,9 @@ export default function PagamentoConfirmado() {
         const res = await axios.get(`${BASE_URL}/api/links/${slug}`);
         setLink(res.data);
         setStatus(res.data.status);
-        setLoading(false);
       } catch (err) {
         setStatus("erro");
+      } finally {
         setLoading(false);
       }
     };
@@ -26,32 +26,54 @@ export default function PagamentoConfirmado() {
     buscarStatus();
   }, [slug, BASE_URL]);
 
-  if (loading) return <div className="p-6">Verificando status do pagamento...</div>;
+  if (loading)
+    return (
+      <div className="p-6 text-center text-gray-600">
+        ⏳ Verificando status do pagamento...
+      </div>
+    );
+
+  const Card = ({ emoji, title, message, color }) => (
+    <div className={`p-6 max-w-md mx-auto bg-white shadow rounded text-center border-t-4 border-${color}-500`}>
+      <div className={`text-${color}-600 text-5xl mb-4`}>{emoji}</div>
+      <h1 className="text-2xl font-bold mb-2 text-gray-800">{title}</h1>
+      <p className="text-gray-700">{message}</p>
+      {link?.slug && (
+        <p className="mt-3 text-sm text-gray-500">
+          Referência: <strong>{link.slug}</strong>
+        </p>
+      )}
+    </div>
+  );
 
   if (status === "pago") {
     return (
-      <div className="p-6 text-center text-green-600">
-        <h1 className="text-2xl font-bold mb-4">Pagamento Confirmado!</h1>
-        <p>Recebemos seu pagamento com sucesso.</p>
-        <p className="mt-2 text-sm">Referência: <strong>{link?.slug}</strong></p>
-      </div>
+      <Card
+        emoji="✅"
+        title="Pagamento Confirmado"
+        message="Recebemos seu pagamento com sucesso!"
+        color="green"
+      />
     );
   }
 
   if (status === "aguardando") {
     return (
-      <div className="p-6 text-center text-yellow-600">
-        <h1 className="text-2xl font-bold mb-4">Pagamento Pendente</h1>
-        <p>Ainda não recebemos a confirmação do pagamento.</p>
-        <p className="mt-2 text-sm">Verifique novamente mais tarde.</p>
-      </div>
+      <Card
+        emoji="⌛"
+        title="Pagamento Pendente"
+        message="Ainda não recebemos a confirmação do pagamento. Verifique novamente mais tarde."
+        color="yellow"
+      />
     );
   }
 
   return (
-    <div className="p-6 text-center text-red-600">
-      <h1 className="text-2xl font-bold mb-4">Erro ao verificar pagamento</h1>
-      <p>Ocorreu um problema ao verificar a transação.</p>
-    </div>
+    <Card
+      emoji="❌"
+      title="Erro na Verificação"
+      message="Ocorreu um problema ao verificar o status do pagamento. Tente novamente mais tarde ou entre em contato com o suporte."
+      color="red"
+    />
   );
 }

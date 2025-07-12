@@ -12,7 +12,7 @@ export default function SuportePage() {
   const carregarTickets = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/suporte/meus`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       setTickets(res.data);
     } catch (err) {
@@ -27,12 +27,11 @@ export default function SuportePage() {
   const abrirTicket = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${BASE_URL}/api/suporte/abrir`, {
-        assunto,
-        mensagem
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.post(
+        `${BASE_URL}/api/suporte/abrir`,
+        { assunto, mensagem },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setAssunto("");
       setMensagem("");
       carregarTickets();
@@ -44,40 +43,60 @@ export default function SuportePage() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Suporte</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-600">Central de Suporte</h2>
 
-      <form onSubmit={abrirTicket} className="space-y-4 mb-6">
+      <form onSubmit={abrirTicket} className="space-y-4 mb-8 bg-white p-4 rounded shadow">
         <input
           type="text"
-          placeholder="Assunto"
+          placeholder="Assunto do chamado"
           value={assunto}
-          onChange={e => setAssunto(e.target.value)}
-          className="w-full border px-4 py-2 rounded"
+          onChange={(e) => setAssunto(e.target.value)}
+          className="w-full border border-gray-300 px-4 py-2 rounded"
           required
         />
         <textarea
-          placeholder="Mensagem"
+          placeholder="Descreva seu problema ou dúvida"
           value={mensagem}
-          onChange={e => setMensagem(e.target.value)}
-          className="w-full border px-4 py-2 rounded"
+          onChange={(e) => setMensagem(e.target.value)}
+          className="w-full border border-gray-300 px-4 py-2 rounded h-32 resize-none"
           required
         ></textarea>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">Abrir Ticket</button>
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200"
+        >
+          Abrir Ticket
+        </button>
       </form>
 
-      <h3 className="text-xl font-semibold mb-2">Meus Chamados</h3>
-      <ul className="space-y-4">
-        {tickets.map(t => (
-          <li key={t._id} className="border p-3 rounded">
-            <p><strong>{t.assunto}</strong> - {t.status}</p>
-            {t.mensagens.map((m, i) => (
-              <p key={i} className={`text-sm ${m.autor === "admin" ? "text-green-600" : ""}`}>
-                [{m.autor}] {m.texto}
+      <h3 className="text-xl font-semibold mb-4">📁 Meus Chamados</h3>
+      {tickets.length === 0 ? (
+        <p className="text-gray-500">Você ainda não abriu nenhum ticket.</p>
+      ) : (
+        <ul className="space-y-4">
+          {tickets.map((t) => (
+            <li key={t._id} className="border border-gray-300 rounded p-4 bg-white shadow">
+              <p className="font-semibold mb-1">
+                {t.assunto} <span className="text-sm text-gray-500">({t.status})</span>
               </p>
-            ))}
-          </li>
-        ))}
-      </ul>
+              <div className="space-y-1 text-sm">
+                {t.mensagens.map((m, i) => (
+                  <p
+                    key={i}
+                    className={`${
+                      m.autor === "admin"
+                        ? "text-green-700"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    <span className="font-medium">[{m.autor}]</span> {m.texto}
+                  </p>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 export default function MinhaAssinatura() {
   const [dados, setDados] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
+
   const token = localStorage.getItem("token");
   const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -14,14 +16,14 @@ export default function MinhaAssinatura() {
     })
       .then(res => {
         setDados(res.data);
-        setLoading(false);
+        setErro("");
       })
       .catch(() => {
-        setLoading(false);
-      });
-  }, [BASE_URL]);
-
-  if (loading) return <div className="p-6">Carregando assinatura...</div>;
+        setErro("Erro ao carregar os dados da assinatura.");
+        setDados(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const nomes = {
     basico: "Básico",
@@ -29,10 +31,16 @@ export default function MinhaAssinatura() {
     premium: "Premium"
   };
 
+  if (loading) return <div className="p-6">Carregando assinatura...</div>;
+
+  if (erro) return <div className="p-6 text-red-600">{erro}</div>;
+
+  if (!dados) return <div className="p-6">Nenhuma informação disponível.</div>;
+
   return (
     <div className="p-6 max-w-xl mx-auto border rounded shadow">
       <h2 className="text-2xl font-bold mb-4">Minha Assinatura</h2>
-      <p><strong>Plano:</strong> {nomes[dados.plano]}</p>
+      <p><strong>Plano:</strong> {nomes[dados.plano] || "Desconhecido"}</p>
       <p><strong>Links usados no mês:</strong> {dados.usados}</p>
       <p><strong>Validade até:</strong> {new Date(dados.validade).toLocaleDateString()}</p>
 

@@ -14,31 +14,50 @@ export default function PaginaAfiliado() {
     const ref = new URLSearchParams(window.location.search).get("ref");
     const url = `${BASE_URL}/api/publico/${slug}${ref ? `?ref=${ref}` : ""}`;
 
-    axios.get(url)
-      .then(res => {
+    axios
+      .get(url)
+      .then((res) => {
         setLink(res.data);
-        setLoading(false);
       })
       .catch(() => {
-        setLoading(false);
         navigate("/erro");
-      });
+      })
+      .finally(() => setLoading(false));
   }, [slug, BASE_URL, navigate]);
 
-  if (loading) return <div className="p-6">Carregando página do afiliado...</div>;
+  if (loading) {
+    return (
+      <div className="p-6 text-center text-gray-500">🔄 Carregando página do afiliado...</div>
+    );
+  }
+
+  if (!link) {
+    return (
+      <div className="p-6 text-center text-red-600">
+        ❌ Produto não encontrado ou expirado.
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 max-w-xl mx-auto text-center">
-      <h1 className="text-2xl font-bold mb-2">{link.title}</h1>
-      <p className="mb-4">{link.description}</p>
-      <p className="text-gray-600">Valor: <strong>Kz {link.amount}</strong></p>
+    <div className="p-6 max-w-xl mx-auto bg-white rounded shadow text-center">
+      <h1 className="text-2xl font-bold mb-2 text-blue-700">{link.title}</h1>
+      <p className="mb-4 text-gray-700">{link.description}</p>
+
+      <p className="text-lg font-semibold text-green-600 mb-6">
+        Valor: Kz {parseFloat(link.amount).toLocaleString()}
+      </p>
+
       <a
         href={`/pagar/${link.slug}?ref=${link.afiliadoId}`}
-        className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded"
+        className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 rounded-lg transition duration-200"
       >
-        Comprar Agora
+        🛒 Comprar Agora
       </a>
-      <p className="mt-6 text-sm text-gray-500">Este link já teve {link.clicksAfiliado || 0} cliques</p>
+
+      <p className="mt-6 text-sm text-gray-500">
+        Este link já teve <strong>{link.clicksAfiliado || 0}</strong> cliques
+      </p>
     </div>
   );
 }

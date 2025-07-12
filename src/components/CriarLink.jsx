@@ -5,14 +5,13 @@ export default function CriarLink({ onLinkCriado }) {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [liquido, setLiquido] = useState(null);
-  const [linkCriado, setLinkCriado] = useState(null); // link visível após criação
+  const [linkCriado, setLinkCriado] = useState(null);
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const BASE_URL = import.meta.env.VITE_API_URL;
-  const BASE_SITE = "https://linkpay-frontend.vercel.app"; // sem barra no final
+  const BASE_SITE = "https://linkpay-frontend.vercel.app";
 
-  // Cálculo da taxa
   const calcularLiquido = (plano, valor) => {
     let p = 0.04;
     if (plano === "ouro") p = 0.025;
@@ -22,7 +21,6 @@ export default function CriarLink({ onLinkCriado }) {
     return valor - taxa;
   };
 
-  // Atualiza valor líquido ao digitar valor
   useEffect(() => {
     if (amount && user?.plano) {
       const valor = parseFloat(amount);
@@ -37,7 +35,6 @@ export default function CriarLink({ onLinkCriado }) {
     }
   }, [amount, user]);
 
-  // Enviar formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -57,7 +54,7 @@ export default function CriarLink({ onLinkCriado }) {
       setTitle("");
       setAmount("");
       setLiquido(null);
-      if (onLinkCriado) onLinkCriado(); // atualiza lista
+      if (onLinkCriado) onLinkCriado();
     } catch (err) {
       console.error("❌ Erro ao criar link:", err);
       alert("Erro ao criar link.");
@@ -65,50 +62,60 @@ export default function CriarLink({ onLinkCriado }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border p-4 rounded shadow mb-6">
-      <h2 className="text-xl font-bold mb-4">Criar Novo Link de Pagamento</h2>
+    <div className="w-full max-w-xl mx-auto p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white border border-gray-300 p-6 rounded-2xl shadow-lg"
+      >
+        <h2 className="text-2xl font-semibold mb-5 text-gray-800 text-center">
+          Criar Novo Link de Pagamento
+        </h2>
 
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Título do produto/serviço"
-        className="w-full border px-4 py-2 rounded mb-3"
-        required
-      />
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Título do produto/serviço"
+          className="w-full border border-gray-300 px-4 py-3 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
 
-      <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Valor (Kz)"
-        className="w-full border px-4 py-2 rounded mb-3"
-        required
-      />
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="Valor (Kz)"
+          className="w-full border border-gray-300 px-4 py-3 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
 
-      {liquido && (
-        <p className="text-sm text-green-600 mb-3">
-          💰 Você receberá aproximadamente <strong>Kz {liquido}</strong> após as taxas.
-        </p>
-      )}
+        {liquido && (
+          <p className="text-sm text-green-700 bg-green-100 p-2 rounded-lg mb-4">
+            💰 Você receberá aproximadamente <strong>Kz {liquido}</strong> após as taxas.
+          </p>
+        )}
 
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-        Criar Link
-      </button>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white font-medium px-6 py-3 rounded-xl mb-2"
+        >
+          Criar Link
+        </button>
 
-      {linkCriado && (
-        <div className="mt-4 bg-gray-100 p-3 rounded border">
-          <p className="text-sm text-gray-700">🔗 Link gerado:</p>
-          <a
-            href={linkCriado}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline break-all"
-          >
-            {linkCriado}
-          </a>
-        </div>
-      )}
-    </form>
+        {linkCriado && (
+          <div className="mt-5 bg-gray-100 p-4 rounded-lg border border-gray-300">
+            <p className="text-sm font-medium text-gray-700 mb-1">🔗 Link gerado:</p>
+            <a
+              href={linkCriado}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-700 underline break-all"
+            >
+              {linkCriado}
+            </a>
+          </div>
+        )}
+      </form>
+    </div>
   );
 }

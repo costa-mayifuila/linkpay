@@ -30,34 +30,58 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 mt-10 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Entrar</h2>
-      {error && <p className="text-red-600">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
-        <input
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded"
-          required
-          autoComplete="email"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Senha"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded"
-          required
-          autoComplete="current-password"
-        />
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
-          Entrar
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
+      <div className="w-full max-w-md bg-white border border-gray-200 shadow-lg rounded-xl p-8">
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">Acesse sua conta</h2>
+
+        {error && (
+          <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded p-3 mb-4">
+            {error}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
+          <div>
+            <input
+              type="email"
+              name="email"
+              placeholder="E-mail"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              autoComplete="email"
+              className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Senha"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="current-password"
+              className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+          >
+            Entrar
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Ainda não tem conta?{" "}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Crie uma agora
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

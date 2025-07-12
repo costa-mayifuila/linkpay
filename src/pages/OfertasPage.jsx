@@ -68,30 +68,32 @@ export default function OfertasPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-10">📦 Escolha seu Plano</h1>
+    <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto">
+      <h1 className="text-3xl md:text-4xl font-bold text-center text-blue-700 mb-10">
+        📦 Escolha seu Plano
+      </h1>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {planos.map((plano, idx) => (
           <div
             key={idx}
-            className="bg-white shadow-md border rounded-xl p-6 text-center"
+            className="bg-white border rounded-2xl shadow-md hover:shadow-lg transition duration-300 p-6 flex flex-col items-center"
           >
-            <h2 className="text-xl font-bold text-blue-600 mb-2">{plano.nome}</h2>
-            <p className="text-gray-500 mb-2">{plano.descricao}</p>
-            <p className="text-3xl font-bold text-green-600 mb-4">
-              Kz {plano.preco.toLocaleString()}
+            <h2 className="text-xl font-bold text-blue-600 mb-1">{plano.nome}</h2>
+            <p className="text-gray-500 text-sm mb-3">{plano.descricao}</p>
+            <p className="text-3xl font-extrabold text-green-600 mb-4">
+              Kz {plano.preco?.toLocaleString() || 0}
             </p>
 
-            <ul className="text-left mb-6 space-y-1">
+            <ul className="text-sm text-gray-700 mb-6 w-full space-y-1">
               {plano.beneficios.map((b, i) => (
-                <li key={i} className="text-sm">✅ {b}</li>
+                <li key={i}>✅ {b}</li>
               ))}
             </ul>
 
             <button
               onClick={() => adquirirPlano(plano.chave)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition"
             >
               Assinar agora
             </button>

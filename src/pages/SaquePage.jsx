@@ -29,18 +29,19 @@ export default function SaquePage() {
       await axios.post(`${BASE_URL}/api/saques/solicitar`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert("Solicitação enviada!");
+      alert("✅ Solicitação enviada com sucesso!");
       setForm({ amount: "", titular: "", banco: "", iban: "" });
       carregarHistorico();
     } catch (err) {
-      alert(err.response?.data?.message || "Erro ao solicitar saque.");
+      alert(err.response?.data?.message || "❌ Erro ao solicitar saque.");
     }
   };
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Solicitar Saque</h2>
-      <form onSubmit={solicitarSaque} className="space-y-4 mb-6">
+      <h2 className="text-2xl font-bold mb-4 text-blue-700">💰 Solicitar Saque</h2>
+
+      <form onSubmit={solicitarSaque} className="space-y-4 bg-white border rounded shadow p-4 mb-8">
         <input
           type="number"
           name="amount"
@@ -77,17 +78,26 @@ export default function SaquePage() {
           className="w-full border px-4 py-2 rounded"
           required
         />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">Solicitar</button>
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200"
+        >
+          Enviar Solicitação
+        </button>
       </form>
 
-      <h3 className="text-xl font-semibold mb-2">Histórico de Saques</h3>
-      <ul className="space-y-2">
+      <h3 className="text-xl font-semibold mb-4">📜 Histórico de Saques</h3>
+      <ul className="space-y-4">
+        {saques.length === 0 && <p className="text-gray-500">Nenhum saque solicitado ainda.</p>}
         {saques.map(s => (
-          <li key={s._id} className="border p-3 rounded">
-            <p><strong>Valor:</strong> Kz {s.amount}</p>
-            <p><strong>Status:</strong> {s.status}</p>
+          <li key={s._id} className="bg-white border rounded shadow p-4">
+            <p><strong>Valor:</strong> Kz {parseFloat(s.amount).toLocaleString()}</p>
+            <p><strong>Status:</strong> <span className="capitalize">{s.status}</span></p>
             <p><strong>Banco:</strong> {s.bankInfo?.banco}</p>
-            <p className="text-sm text-gray-600">Solicitado em: {new Date(s.requestedAt).toLocaleString()}</p>
+            <p className="text-sm text-gray-600">
+              <strong>Solicitado em:</strong>{" "}
+              {new Date(s.requestedAt).toLocaleDateString("pt-BR")} às {new Date(s.requestedAt).toLocaleTimeString("pt-BR")}
+            </p>
           </li>
         ))}
       </ul>
