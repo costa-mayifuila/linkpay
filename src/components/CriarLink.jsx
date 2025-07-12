@@ -10,7 +10,7 @@ export default function CriarLink({ onLinkCriado }) {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const BASE_URL = import.meta.env.VITE_API_URL;
-  const BASE_SITE = "https://seusite.ao"; // substitua com seu domínio real
+  const BASE_SITE = "https://linkpay-frontend.vercel.app/"; // substitua com seu domínio real
 
   const calcularLiquido = (plano, valor) => {
     let p = 0.04;
