@@ -5,13 +5,14 @@ export default function CriarLink({ onLinkCriado }) {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [liquido, setLiquido] = useState(null);
-  const [linkCriado, setLinkCriado] = useState(null); // <- novo
+  const [linkCriado, setLinkCriado] = useState(null); // link visível após criação
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const BASE_URL = import.meta.env.VITE_API_URL;
-  const BASE_SITE = "https://linkpay-frontend.vercel.app/"; // substitua com seu domínio real
+  const BASE_SITE = "https://linkpay-frontend.vercel.app"; // sem barra no final
 
+  // Cálculo da taxa
   const calcularLiquido = (plano, valor) => {
     let p = 0.04;
     if (plano === "ouro") p = 0.025;
@@ -21,6 +22,7 @@ export default function CriarLink({ onLinkCriado }) {
     return valor - taxa;
   };
 
+  // Atualiza valor líquido ao digitar valor
   useEffect(() => {
     if (amount && user?.plano) {
       const valor = parseFloat(amount);
@@ -35,6 +37,7 @@ export default function CriarLink({ onLinkCriado }) {
     }
   }, [amount, user]);
 
+  // Enviar formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -48,13 +51,13 @@ export default function CriarLink({ onLinkCriado }) {
         }
       );
 
-      const link = res.data.link; // ← pega o link com o slug
+      const link = res.data.link;
       setLinkCriado(`${BASE_SITE}/pagar/${link.slug}`);
       alert("✅ Link criado com sucesso!");
       setTitle("");
       setAmount("");
       setLiquido(null);
-      if (onLinkCriado) onLinkCriado();
+      if (onLinkCriado) onLinkCriado(); // atualiza lista
     } catch (err) {
       console.error("❌ Erro ao criar link:", err);
       alert("Erro ao criar link.");
